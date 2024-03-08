@@ -282,8 +282,16 @@ unsigned int server_call_unlocked( void *req_ptr )
  */
 unsigned int CDECL wine_server_call( void *req_ptr )
 {
+    struct __server_request_info * const req = req_ptr;
     sigset_t old_set;
     unsigned int ret;
+
+    /* trigger write watches, otherwise read() might return EFAULT */
+    if (req->u.req.request_header.reply_size &&
+        !virtual_check_buffer_for_write( req->reply_data, req->u.req.request_header.reply_size ))
+    {
+        return STATUS_ACCESS_VIOLATION;
+    }
 
     pthread_sigmask( SIG_BLOCK, &server_block_set, &old_set );
     ret = server_call_unlocked( req_ptr );
@@ -801,8 +809,27 @@ unsigned int server_wait( const select_op_t *select_op, data_size_t size, UINT f
  */
 NTSTATUS WINAPI NtContinue( CONTEXT *context, BOOLEAN alertable )
 {
+    /* NtContinueEx accepts both */
+    return NtContinueEx(context, (PCONTINUE_OPTIONS)(intptr_t)alertable);
+}
+
+
+/***********************************************************************
+ *              NtContinueEx  (NTDLL.@)
+ */
+NTSTATUS WINAPI NtContinueEx( CONTEXT *context, PCONTINUE_OPTIONS options )
+{
     user_apc_t apc;
     NTSTATUS status;
+    BOOLEAN alertable;
+
+    if (options <= 0xff) {
+        alertable = (BOOLEAN)(intptr_t)options;
+    } else {
+        alertable = !!(options->ContinueFlags & CONTINUE_FLAG_TEST_ALERT);
+        /* FIXME: no idea how to handle rest of CONTINUE_OPTIONS stuff */
+        FIXME("NtContinueEx is not implemented!");
+    }
 
     if (alertable)
     {

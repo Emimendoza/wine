@@ -1,0 +1,10 @@
+--- dlls/ntdll/unix/loader.c
++++ dlls/ntdll/unix/loader.c
+@@ -149,6 +149,7 @@ static void * const syscalls[] =
+     NtCompleteConnectPort,
+     NtConnectPort,
+     NtContinue,
++    NtContinueEx,
+     NtCreateDebugObject,
+     NtCreateDirectoryObject,
+     NtCreateEvent,

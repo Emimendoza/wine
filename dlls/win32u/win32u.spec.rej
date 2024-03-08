@@ -1,0 +1,11 @@
+--- dlls/win32u/win32u.spec
++++ dlls/win32u/win32u.spec
+@@ -295,7 +295,7 @@
+ @ stub NtGdiDdDDIPresentMultiPlaneOverlay2
+ @ stub NtGdiDdDDIPresentMultiPlaneOverlay3
+ @ stub NtGdiDdDDIPresentRedirected
+-@ stub NtGdiDdDDIQueryAdapterInfo
++@ stdcall -syscall NtGdiDdDDIQueryAdapterInfo(ptr)
+ @ stub NtGdiDdDDIQueryAllocationResidency
+ @ stub NtGdiDdDDIQueryClockCalibration
+ @ stub NtGdiDdDDIQueryFSEBlock

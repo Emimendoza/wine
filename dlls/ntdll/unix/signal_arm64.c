@@ -1227,6 +1227,12 @@ NTSTATUS WINAPI NtCallbackReturn( void *ret_ptr, ULONG ret_len, NTSTATUS status 
     user_mode_callback_return( ret_ptr, ret_len, status, NtCurrentTeb() );
 }
 
+/**********************************************************************
+ *    signal_init_early
+ */
+void signal_init_early(void)
+{
+}
 
 /***********************************************************************
  *           handle_syscall_fault

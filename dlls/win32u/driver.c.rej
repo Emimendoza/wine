@@ -1,0 +1,21 @@
+--- dlls/win32u/driver.c
++++ dlls/win32u/driver.c
+@@ -1539,6 +1539,18 @@ NTSTATUS WINAPI NtGdiDdDDIDestroyDevice( const D3DKMT_DESTROYDEVICE *desc )
+     return status;
+ }
+ 
++/******************************************************************************
++ *           NtGdiDdDDIQueryAdapterInfo    (win32u.@)
++ */
++NTSTATUS WINAPI NtGdiDdDDIQueryAdapterInfo( D3DKMT_QUERYADAPTERINFO *desc )
++{
++    if (!desc)
++        return STATUS_INVALID_PARAMETER;
++
++    FIXME("desc %p, type %d stub\n", desc, desc->Type);
++    return STATUS_NOT_IMPLEMENTED;
++}
++
+ /******************************************************************************
+  *           NtGdiDdDDIQueryStatistics    (win32u.@)
+  */

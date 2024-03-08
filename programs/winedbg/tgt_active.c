@@ -22,8 +22,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
-#include <time.h>
-#include <sys/stat.h>
 
 #include "debugger.h"
 #include "psapi.h"
@@ -950,10 +948,6 @@ enum dbg_start dbg_active_auto(int argc, char* argv[])
         event = CreateEventW( NULL, TRUE, FALSE, NULL );
         if (event) thread = display_crash_details( event );
         if (thread) dbg_houtput = output = create_temp_file();
-        break;
-    case TRUE:
-        dbg_use_wine_dbg_output = TRUE;
-        dbg_crash_report_file = create_crash_report_file();
         break;
     }
 

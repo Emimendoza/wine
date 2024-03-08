@@ -1,0 +1,10 @@
+--- dlls/win32u/syscall.c
++++ dlls/win32u/syscall.c
+@@ -76,6 +76,7 @@ static void * const syscalls[] =
+     NtGdiCreateSolidBrush,
+     NtGdiDdDDICreateDevice,
+     NtGdiDdDDIOpenAdapterFromHdc,
++    NtGdiDdDDIQueryAdapterInfo,
+     NtGdiDdDDIQueryStatistics,
+     NtGdiDdDDIQueryVideoMemoryInfo,
+     NtGdiDdDDISetQueuedLimit,

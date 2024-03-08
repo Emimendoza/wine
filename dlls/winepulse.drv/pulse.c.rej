@@ -1,0 +1,46 @@
+--- dlls/winepulse.drv/pulse.c
++++ dlls/winepulse.drv/pulse.c
+@@ -762,31 +763,32 @@ static NTSTATUS pulse_test_connect(void *args)
+     PhysDevice *dev;
+     pa_operation *o;
+     int ret;
++    pa_mainloop *ml;
++    pa_context *ctx;
+ 
+     pulse_lock();
+-    pulse_ml = pa_mainloop_new();
++    ml = pa_mainloop_new();
+ 
+-    pa_mainloop_set_poll_func(pulse_ml, pulse_poll_func, NULL);
++    pa_mainloop_set_poll_func(ml, pulse_poll_func, NULL);
+ 
+-    pulse_ctx = pa_context_new(pa_mainloop_get_api(pulse_ml), params->name);
+-    if (!pulse_ctx) {
++    ctx = pa_context_new(pa_mainloop_get_api(ml), params->name);
++    if (!ctx) {
+         ERR("Failed to create context\n");
+-        pa_mainloop_free(pulse_ml);
+-        pulse_ml = NULL;
++        pa_mainloop_free(ml);
+         pulse_unlock();
+         params->priority = Priority_Unavailable;
+         return STATUS_SUCCESS;
+     }
+ 
+-    pa_context_set_state_callback(pulse_ctx, pulse_contextcallback, NULL);
++    pa_context_set_state_callback(ctx, pulse_contextcallback, NULL);
+ 
+-    TRACE("libpulse protocol version: %u. API Version %u\n", pa_context_get_protocol_version(pulse_ctx), PA_API_VERSION);
+-    if (pa_context_connect(pulse_ctx, NULL, 0, NULL) < 0)
++    TRACE("libpulse protocol version: %u. API Version %u\n", pa_context_get_protocol_version(ctx), PA_API_VERSION);
++    if (pa_context_connect(ctx, NULL, 0, NULL) < 0)
+         goto fail;
+ 
+     /* Wait for connection */
+-    while (pa_mainloop_iterate(pulse_ml, 1, &ret) >= 0) {
+-        pa_context_state_t state = pa_context_get_state(pulse_ctx);
++    while (pa_mainloop_iterate(ml, 1, &ret) >= 0) {
++        pa_context_state_t state = pa_context_get_state(ctx);
+ 
+         if (state == PA_CONTEXT_FAILED || state == PA_CONTEXT_TERMINATED)
+             goto fail;
